@@ -8,6 +8,17 @@ The program currently supports longtable, tabular, tabbing, array, matrix, pmatr
 
 This program is designed to make the creation of LaTeX tables easier but is not designed to do everything for the user. For someone who is familiar with LaTeX typesetting and the basic code for tables it will provide a nice layout that should be easy to edit and manipulate. In addition, there are options for exporting the grid contents to Mathematica, and Maxima code as well as [ ] and < > delimited strings that are commonly used in other packages.
 
+**Windows Users**
+
+This is a Python application using the PySide6 GUI API, but you do not need to have either Python nor PySide6 installed on your machine to run this program.  The Windows distribution of this program is as a single stand-alone executable file, LaTeXTableCreator.exe.
+
+- Download and extract the LaTeXTableCreator_WIN_EXE.zip file from the version directory.
+- From Windows Explorer double-click the LaTeXTableCreator.exe file.  
+
+Note that there are a couple program icons included in the zip folder as well, for creating shortcuts to the program if you wish.  This has been tested on both Windows 10 and 11. 
+
+**Linux and MacOS Users**
+
 This is a Python application using the PySide6 GUI API. To run this program from the source code you will need both Python3 and the python package PySide6 installed on your system.
 
 To run this program from the source code:

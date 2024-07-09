@@ -28,3 +28,9 @@ To run this program from the source code:
 - Run the following command from your terminal,
 
 `python LaTeXTableCreator.py` or possibly  `python3 LaTeXTableCreator.py`
+
+---
+
+**Screenshot**
+
+![Screenshot of program.](/Version_2_3_1/LaTeXTableCreatorPython.png)

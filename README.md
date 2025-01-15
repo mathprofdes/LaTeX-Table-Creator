@@ -24,7 +24,10 @@ To run this program from the source code:
 - There are png and ico files of a program icon included if you wish to use them for a shortcut to the program. 
   - **[ProgramIcon.ico](https://github.com/mathprofdes/LaTeX-Table-Creator/releases/download/v2.4.1/ProgramIcon.ico)**
   - **[ProgramIcon.png](https://github.com/mathprofdes/LaTeX-Table-Creator/releases/download/v2.4.1/ProgramIcon.png)**
- 
+
+**Updates:** 
+- Added a copy to SageMath matrix syntax to the edit menu.
+
 ---
 
 **Program Description**

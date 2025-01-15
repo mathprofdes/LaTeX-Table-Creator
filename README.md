@@ -6,7 +6,7 @@
 
 This is a Python application using the PySide6 GUI API, but you do not need to have either Python nor PySide6 installed on your machine to run this program. The Windows distribution of this program is as a single stand-alone executable file, LaTeXTableCreator.exe.  This software has been tested on both Windows 10 and 11.
 
-- Download the **[LaTeXTableCreator.exe](https://github.com/mathprofdes/LaTeX-Table-Creator/releases/download/v2.3.1/LaTeXTableCreator.exe)** file.
+- Download the **[LaTeXTableCreator.exe](https://github.com/mathprofdes/LaTeX-Table-Creator/releases/download/v2.4.1/LaTeXTableCreator.exe)** file.
 - From Windows Explorer double-click the LaTeXTableCreator.exe file.
 
 **Linux and MacOS Users**
@@ -15,15 +15,15 @@ This is a Python application using the PySide6 GUI API. To run this program from
 
 To run this program from the source code:
 
-- Download and extract the **[LaTeXTableCreator_src.zip](https://github.com/mathprofdes/LaTeX-Table-Creator/releases/download/v2.3.1/LaTeXTableCreator_src.zip)** file.
+- Download and extract the Source Code file from the most current release.
 - Make sure that Python3 and the python package PySide6 are installed on your system.
 - Run the following command from your terminal: `python LaTeXTableCreator.py` or possibly `python3 LaTeXTableCreator.py`
 
 **Notes:** 
 - For Linux and MacOS users, depending on how your system is set up, you may be able to simply double-click the LaTeXTableCreator.py file from your file browser instead of running this from the terminal.
 - There are png and ico files of a program icon included if you wish to use them for a shortcut to the program. 
-  - **[ProgramIcon.ico](https://github.com/mathprofdes/LaTeX-Table-Creator/releases/download/v2.3.1/ProgramIcon.ico)**
-  - **[ProgramIcon.png](https://github.com/mathprofdes/LaTeX-Table-Creator/releases/download/v2.3.1/ProgramIcon.png)**
+  - **[ProgramIcon.ico](https://github.com/mathprofdes/LaTeX-Table-Creator/releases/download/v2.4.1/ProgramIcon.ico)**
+  - **[ProgramIcon.png](https://github.com/mathprofdes/LaTeX-Table-Creator/releases/download/v2.4.1/ProgramIcon.png)**
  
 ---
 
@@ -35,7 +35,7 @@ The LaTeX export is done through the system clipboard. The user should populate 
 
 The program currently supports longtable, tabular, tabbing, array, matrix, pmatrix, bmatrix, vmatrix, and Vmatrix environments. When copied, the clipboard text will have a commented line of any needed packages to be included in the preamble of the document. Each of the supported environments has a set of options for that environment, which includes alignment options, border and division options, header row and column creation, automatic math mode inclusion, and matrix decorations.
 
-This program is designed to make the creation of LaTeX tables easier but is not designed to do everything for the user. For someone who is familiar with LaTeX typesetting and the basic code for tables it will provide a nice layout that should be easy to edit and manipulate. In addition, there are options for exporting the grid contents to Mathematica, and Maxima code as well as [ ] and < > delimited strings that are commonly used in other packages.
+This program is designed to make the creation of LaTeX tables easier but is not designed to do everything for the user. For someone who is familiar with LaTeX typesetting and the basic code for tables it will provide a nice layout that should be easy to edit and manipulate. In addition, there are options for exporting the grid contents to SageMath, Maxima, and Mathematica code as well as [ ] and < > delimited strings that are commonly used in other packages.
 
 ---
 

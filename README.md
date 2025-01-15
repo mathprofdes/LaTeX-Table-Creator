@@ -41,4 +41,4 @@ This program is designed to make the creation of LaTeX tables easier but is not 
 
 **Screenshot**
 
-![Screenshot of program.](/Version_2_4_1/LatexTableCreatorScreenshot.png)
+![Screenshot of program.](https://github.com/mathprofdes/LaTeX-Table-Creator/releases/download/v2.4.1/LatexTableCreatorScreenshot.png)

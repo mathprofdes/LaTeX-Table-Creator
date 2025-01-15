@@ -1,6 +1,6 @@
 # LaTeX Table Creator
 
-**Download the Current Version (2.3.1)**
+**Download the Current Version (2.4.1)**
 
 **Windows Users**
 

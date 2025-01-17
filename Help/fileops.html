@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>LaTeX Table Creator User’s Guide &#8212; LaTeX Table Creator 2.5.1 documentation</title>
+    <title>File Options &#8212; LaTeX Table Creator 2.5.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=f6a572b4" />
@@ -14,7 +14,8 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Program Layout" href="layout.html" />
+    <link rel="next" title="Edit Options" href="editops.html" />
+    <link rel="prev" title="Program Layout" href="layout.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -27,7 +28,7 @@
     
       <div class="sphinxsidebar" role="navigation" aria-label="Main">
         <div class="sphinxsidebarwrapper">
-<h1 class="logo"><a href="#">LaTeX Table Creator</a></h1>
+<h1 class="logo"><a href="index.html">LaTeX Table Creator</a></h1>
 
 
 
@@ -51,9 +52,14 @@
 </search>
 <script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layout.html">Program Layout</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fileops.html">File Options</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">File Options</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#new">New</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#open">Open</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#save-as">Save As…</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="editops.html">Edit Options</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tableops.html">Table Options</a></li>
 <li class="toctree-l1"><a class="reference internal" href="exportops.html">LaTeX Export Options</a></li>
@@ -62,8 +68,9 @@
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
-  <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="layout.html" title="next chapter">Program Layout</a></li>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="layout.html" title="previous chapter">Program Layout</a></li>
+      <li>Next: <a href="editops.html" title="next chapter">Edit Options</a></li>
   </ul></li>
 </ul>
 </div>
@@ -83,17 +90,20 @@
 
           <div class="body" role="main">
             
-  <section id="latex-table-creator-user-s-guide">
-<h1>LaTeX Table Creator User’s Guide<a class="headerlink" href="#latex-table-creator-user-s-guide" title="Link to this heading">¶</a></h1>
-<section id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
-<p>The LaTeX Table Creator is an application that allows the user to input data into a grid and export the contents to LaTeX syntax given a few options. The program is not a WYSIWYG interface and certainly does not provide a complete set of options. This program is for quick conversions of table data into either table or matrix LaTeX code. It does offer copy and paste capabilities within the program and between the program and most spreadsheets (tab delimited text transfer). In addition, there are several options for populating the grid, transposing, resizing, inserting and deleting rows and columns, undo and redo, and file saving and loading of the data grid.</p>
-<img alt="_images/LaTeXTableCreatorPython.png" src="_images/LaTeXTableCreatorPython.png" />
-<p>The LaTeX export is done through the system clipboard. The user should populate the grid with the desired data, select the LaTeX options on the right side of the window and then copy the grid as LaTeX code. From there the user can paste the code into any editor they are using to create their document.</p>
-<p>The program currently supports longtable, tabular, tabbing, array, matrix, pmatrix, bmatrix, vmatrix, and Vmatrix environments. When copied, the clipboard text will have a commented line of any needed packages to be included in the preamble of the document. Each of the supported environments has a set of options for that environment, which includes alignment options, border and division options, header row and column creation, automatic math mode inclusion, and matrix decorations.</p>
-<p>This program is designed to make the creation of LaTeX tables easier but is not designed to do everything for the user. For someone who is familiar with LaTeX typesetting and the basic code for tables it will provide a nice layout that should be easy to edit and manipulate. In addition, there are options for exporting the grid contents to SageMath, Maxima, and Mathematica code as well as [ ] and &lt; &gt; delimited strings that are commonly used in other packages.</p>
-<div class="toctree-wrapper compound">
-</div>
+  <section id="file-options">
+<h1>File Options<a class="headerlink" href="#file-options" title="Link to this heading">¶</a></h1>
+<p>The file options allow you to save and load table information. The saving and loading of table information is just on the current table itself, the undo and redo history is not saved.</p>
+<section id="new">
+<h2>New<a class="headerlink" href="#new" title="Link to this heading">¶</a></h2>
+<p>The New option will open another copy of the program with a blank grid.</p>
+</section>
+<section id="open">
+<h2>Open<a class="headerlink" href="#open" title="Link to this heading">¶</a></h2>
+<p>The Open option will open a table data file. When a file is opened it will replace the current table with the saved one. The undo/redo history is not cleared so the table that is overwritten is still in the history. The data files are stored in binary format and cannot be edited with an outside editor.</p>
+</section>
+<section id="save-as">
+<h2>Save As…<a class="headerlink" href="#save-as" title="Link to this heading">¶</a></h2>
+<p>The Save As… option will save the current table to a table data file. Saving will save only the current table and not the history. The data files are stored in binary format and cannot be edited with an outside editor.</p>
 </section>
 </section>
 
@@ -104,7 +114,11 @@
   <nav id="rellinks">
     <ul>
         <li>
-          <a href="layout.html" title="Next document">Program Layout</a>
+          &larr;
+          <a href="layout.html" title="Previous document">Program Layout</a>
+        </li>
+        <li>
+          <a href="editops.html" title="Next document">Edit Options</a>
           &rarr;
         </li>
     </ul>
@@ -123,7 +137,7 @@
       &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
       
       |
-      <a href="_sources/index.rst.txt"
+      <a href="_sources/fileops.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>LaTeX Export Options &#8212; LaTeX Table Creator 2.5.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=f6a572b4" />
+    <script src="_static/documentation_options.js?v=983e91d6"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Table Options" href="tableops.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">LaTeX Table Creator</a></h1>
+
+
+
+<p class="blurb">The LaTeX Table Creator is an application that allows the user to input data into a grid and export the contents to LaTeX syntax.</p>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layout.html">Program Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fileops.html">File Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="editops.html">Edit Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tableops.html">Table Options</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">LaTeX Export Options</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#longtable-tabular-options">longtable &amp; tabular Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tabbing-options">tabbing Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#array-options">array Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#matrix-options">matrix Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#special-matrix-options">Special Matrix Options</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="tableops.html" title="previous chapter">Table Options</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="latex-export-options">
+<h1>LaTeX Export Options<a class="headerlink" href="#latex-export-options" title="Link to this heading">¶</a></h1>
+<p>LaTeX export is done through the system clipboard. The user should populate the grid with the desired data, select the LaTeX options on the right side of the program window and then copy the grid as LaTeX code using Ctrl+L, the Edit &gt; Copy as LaTeX option from the menu, or its corresponding toolbar button. From there the user can paste the code into any editor they are using to create their document. Note that the entire grid will be exported to LaTeX code not just any selections.</p>
+<section id="longtable-tabular-options">
+<h2>longtable &amp; tabular Options<a class="headerlink" href="#longtable-tabular-options" title="Link to this heading">¶</a></h2>
+<p>These modes have options for column alignment, a table border, and several options for division lines between rows and columns. The Column Alignment is the alignment used for all columns in the table. These can be overridden by header rows or columns. The alignment is on each column but is easily editable in the pasted LaTeX code.</p>
+<p>The Divisions options are for the selection of common division lines in the table. If you have worked with LaTeX you know there are many more possibilities here for row and column divisions. This program just includes some of the more common selections and if they are not exactly what is needed it should only take some minimal editing.</p>
+<ul class="simple">
+<li><p>Table Boarder puts a simple border around the entire table.</p></li>
+<li><p>Division After First Row puts a line directly below the first row.</p></li>
+<li><p>Division on All Rows puts a line directly below each row of the table and one at the top.</p></li>
+<li><p>Division After First Column puts a line directly to the right of the first column.</p></li>
+<li><p>Division After All Columns puts a line directly to the right of each column of the table and one at the left.</p></li>
+</ul>
+<p>At the bottom there are options to include math mode around the contents of each cell, and to include the arraystretch renew command. If the math mode is selected, then each cell will be put into inline math mode.</p>
+<p>These modes also have options for both row and column headers. Each header type can include as many rows and columns as you wish, you can set the alignment of the headers as well as the font styles of the headers. When a cell is both a row header and a column header the attributes for the column header are used. For example,</p>
+<ul class="simple">
+<li><p>A table with no headers:</p></li>
+</ul>
+<img alt="_images/Tab001.png" src="_images/Tab001.png" />
+<ul class="simple">
+<li><p>The same table with just one column header in bold:</p></li>
+</ul>
+<img alt="_images/Tab002.png" src="_images/Tab002.png" />
+<ul class="simple">
+<li><p>The same table with just one row header in italics:</p></li>
+</ul>
+<img alt="_images/Tab003.png" src="_images/Tab003.png" />
+<ul class="simple">
+<li><p>The same table with one row header in italics and one column header in bold:</p></li>
+</ul>
+<img alt="_images/Tab004.png" src="_images/Tab004.png" />
+</section>
+<section id="tabbing-options">
+<h2>tabbing Options<a class="headerlink" href="#tabbing-options" title="Link to this heading">¶</a></h2>
+<p>The tabbing mode has only two options, the column spacing for each column and to include math mode on each cell. The column spacing will be in points, remember 72 points to an inch. If the math mode is selected, then each cell will be put into inline math mode.</p>
+</section>
+<section id="array-options">
+<h2>array Options<a class="headerlink" href="#array-options" title="Link to this heading">¶</a></h2>
+<p>This mode has options for column alignment, a table border, and several options for division lines between rows and columns. These are the same as with the longtable and tabular options. There are also options to include the display math mode around the code, and to include the arraystretch renew command. This mode also allows the user to select a decoration, that is include brackets, parenthesis, or vertical bars around the matrix.</p>
+<img alt="_images/Mat001.png" src="_images/Mat001.png" />
+</section>
+<section id="matrix-options">
+<h2>matrix Options<a class="headerlink" href="#matrix-options" title="Link to this heading">¶</a></h2>
+<p>This option requires the amsmath package to be used. There are options to include the display math mode around the code, to include the arraystretch renew, and to include bracket, parenthesis, or vertical bar decorations around the matrix.</p>
+<img alt="_images/Mat002.png" src="_images/Mat002.png" />
+</section>
+<section id="special-matrix-options">
+<h2>Special Matrix Options<a class="headerlink" href="#special-matrix-options" title="Link to this heading">¶</a></h2>
+<p>All of these option will require the amsmath package to be used. When the special matrix type is selected the user will have the option of exporting to a pmatrix, bmatrix, vmatrix, or Vmatrix. The only other options are to include the display math mode around the code and to include the arraystretch renew command.</p>
+<ul class="simple">
+<li><p>pmatrix</p></li>
+</ul>
+<img alt="_images/Mat003.png" src="_images/Mat003.png" />
+<ul class="simple">
+<li><p>bmatrix</p></li>
+</ul>
+<img alt="_images/Mat004.png" src="_images/Mat004.png" />
+<ul class="simple">
+<li><p>vmatrix</p></li>
+</ul>
+<img alt="_images/Mat005.png" src="_images/Mat005.png" />
+<ul class="simple">
+<li><p>Vmatrix</p></li>
+</ul>
+<img alt="_images/Mat006.png" src="_images/Mat006.png" />
+</section>
+</section>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="tableops.html" title="Previous document">Table Options</a>
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &#169;2025, Don Spickler.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/exportops.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/mathprofdes/Latex-Table-Creator" class="github">
+        <img src="_static/github-banner.svg" alt="Fork me on GitHub" class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

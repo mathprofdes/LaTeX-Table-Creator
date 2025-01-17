@@ -44,7 +44,7 @@ class LaTeXTableEditor(QMainWindow):
         self.Parent = parent
         
         self.authors = "Don Spickler"
-        self.version = "2.4.1"
+        self.version = "2.5.1"
         self.program_title = "Latex Table Creator"
         self.copyright = "2022 - 2025"
         self.licence = "\nThis software is distributed under the GNU General Public License version 3.\n\n" + \
@@ -409,7 +409,7 @@ class LaTeXTableEditor(QMainWindow):
         """
         Display information about program dialog box
         """
-        self.url_home_string = "file://" + self.resource_path("Help/Help.html")
+        self.url_home_string = "file://" + self.resource_path("Help/index.html")
         webbrowser.open(self.url_home_string)
 
     def openFile(self):
@@ -1016,8 +1016,8 @@ class LaTeXTableEditor(QMainWindow):
         """
         items = []
         str = self.clipboard.text()
-        str = str.replace('\&', '<~~amp~~>')
-        str = str.replace('\hline', '')
+        str = str.replace('\\&', '<~~amp~~>')
+        str = str.replace('\\hline', '')
         strlist = str.split('\\\\')
 
         for line in strlist:
@@ -1026,7 +1026,7 @@ class LaTeXTableEditor(QMainWindow):
                 linelist = line.split('&')
                 for i in range(len(linelist)):
                     newline = linelist[i]
-                    newline = newline.replace('<~~amp~~>', '\&')
+                    newline = newline.replace('<~~amp~~>', '\\&')
                     newline = newline.rstrip().lstrip()
                     linelist[i] = newline
                 items.append(linelist)

@@ -26,7 +26,8 @@ To run this program from the source code:
   - **[ProgramIcon.png](https://github.com/mathprofdes/LaTeX-Table-Creator/releases/download/v2.5.1/ProgramIcon.png)**
 
 **Updates:** 
-- Added a copy to SageMath matrix syntax to the edit menu.
+- Fixed a small bug in the Paste from LaTeX code.
+- Revised the help system to Sphinx.
 
 ---
 

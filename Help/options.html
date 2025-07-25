@@ -1,0 +1,669 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Program Options &#8212; LaTeX Table Creator 2.6.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/design-tabs.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'options';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="LaTeX Export Options" href="exportops.html" />
+    <link rel="prev" title="LaTeX Table Creator User’s Guide" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+    <meta name="docbuild:last-update" content="Monday, June 16, 2025  -  09:40 AM"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/ProgramIcon2.png" class="logo__image only-light" alt="LaTeX Table Creator 2.6.1 documentation - Home"/>
+    <img src="_static/ProgramIcon2.png" class="logo__image only-dark pst-js-only" alt="LaTeX Table Creator 2.6.1 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Program Options
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="exportops.html">
+    LaTeX Export Options
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mathprofdes/Latex-Table-Creator" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    Program Options
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="exportops.html">
+    LaTeX Export Options
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/mathprofdes/Latex-Table-Creator" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Program Options</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="program-options">
+<h1>Program Options<a class="headerlink" href="#program-options" title="Permalink to this heading">#</a></h1>
+<section id="file-options">
+<h2>File Options<a class="headerlink" href="#file-options" title="Permalink to this heading">#</a></h2>
+<p>The file options allow you to save and load table information. The saving and loading of table information is just on the current table itself, the undo and redo history is not saved.</p>
+<section id="new">
+<h3>New<a class="headerlink" href="#new" title="Permalink to this heading">#</a></h3>
+<p>The New option will open another copy of the program with a blank grid.</p>
+</section>
+<section id="open">
+<h3>Open<a class="headerlink" href="#open" title="Permalink to this heading">#</a></h3>
+<p>The Open option will open a table data file. When a file is opened it will replace the current table with the saved one. The undo/redo history is not cleared so the table that is overwritten is still in the history. The data files are stored in binary format and cannot be edited with an outside editor.</p>
+</section>
+<section id="save-as">
+<h3>Save As…<a class="headerlink" href="#save-as" title="Permalink to this heading">#</a></h3>
+<p>The Save As… option will save the current table to a table data file. Saving will save only the current table and not the history. The data files are stored in binary format and cannot be edited with an outside editor.</p>
+</section>
+</section>
+<section id="edit-options">
+<h2>Edit Options<a class="headerlink" href="#edit-options" title="Permalink to this heading">#</a></h2>
+<p>The Edit menu contains standard copy and paste options as one would expect. It also has options for creating LaTeX code, as the program was designed to do, and export to specialized formats.</p>
+<section id="copy-selected-copy-all-select-all-paste-options">
+<h3>Copy Selected, Copy All, Select All, &amp; Paste Options<a class="headerlink" href="#copy-selected-copy-all-select-all-paste-options" title="Permalink to this heading">#</a></h3>
+<p>These are your usual options for clipboard transfer to and from the grid. Copy Selected copies the currently selected portion of the table as tab delimited text to the clipboard. Copy All does the same but with the entire grid. Paste will paste in tab delimited text to the table at the currently selected position. With the paste option, if what is being pasted at the current position needs more space, rows or columns, the grid will automatically resize itself to fit the added content.</p>
+</section>
+<section id="copy-as-latex">
+<h3>Copy as LaTeX<a class="headerlink" href="#copy-as-latex" title="Permalink to this heading">#</a></h3>
+<p>The Copy as LaTeX option will create LaTeX code for the current grid contents using the options you have selected in the LaTeX Options box. This code is automatically copied to the clipboard so you can paste it into your LaTeX document. Details about what these options do is discussed in the  <a class="reference internal" href="exportops.html"><span class="doc">LaTeX Export Options</span></a> section.  For example, if you use a long table with the default options the program would put the following into the clipboard.</p>
+<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span><span class="c">% Package: \usepackage{longtable}</span>
+
+<span class="k">\begin</span><span class="nb">{</span>longtable<span class="nb">}</span>[l]<span class="nb">{</span>lll<span class="nb">}</span>
+1 <span class="nb">&amp;</span> 4 <span class="nb">&amp;</span> 7 <span class="k">\\</span>
+2 <span class="nb">&amp;</span> 5 <span class="nb">&amp;</span> 8 <span class="k">\\</span>
+3 <span class="nb">&amp;</span> 6 <span class="nb">&amp;</span> 9 <span class="k">\\</span>
+<span class="k">\end</span><span class="nb">{</span>longtable<span class="nb">}</span>
+</pre></div>
+</div>
+</section>
+<section id="paste-from-latex">
+<h3>Paste from LaTeX<a class="headerlink" href="#paste-from-latex" title="Permalink to this heading">#</a></h3>
+<p>There is also an option to paste from LaTeX code, Shift+Ctrl+L or using the menu option Edit &gt; Paste from LaTeX. This will take the body of LaTeX code, extract the cell entries, and load the data into the grid. As with exporting to LaTeX code the entire grid is replaced with the data, not just the selection. For example, if you had the following table,</p>
+<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span><span class="k">\begin</span><span class="nb">{</span>longtable<span class="nb">}</span>[l]<span class="nb">{</span>lll<span class="nb">}</span>
+1 <span class="nb">&amp;</span> 4 <span class="nb">&amp;</span> 7 <span class="k">\\</span>
+2 <span class="nb">&amp;</span> 5 <span class="nb">&amp;</span> 8 <span class="k">\\</span>
+3 <span class="nb">&amp;</span> 6 <span class="nb">&amp;</span> 9 <span class="k">\\</span>
+<span class="k">\end</span><span class="nb">{</span>longtable<span class="nb">}</span>
+</pre></div>
+</div>
+<p>and then copied the body portion to the clipboard, not including the begin and end statements, that is,</p>
+<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span>1 <span class="nb">&amp;</span> 4 <span class="nb">&amp;</span> 7 <span class="k">\\</span>
+2 <span class="nb">&amp;</span> 5 <span class="nb">&amp;</span> 8 <span class="k">\\</span>
+3 <span class="nb">&amp;</span> 6 <span class="nb">&amp;</span> 9 <span class="k">\\</span>
+</pre></div>
+</div>
+<p>then select Shift+Ctrl+L or Edit &gt; Paste from LaTeX the program would extract the contents into the grid,</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">1  4  7</span>
+<span class="go">2  5  8</span>
+<span class="go">3  6  9</span>
+</pre></div>
+</div>
+<p>This option will also parse through hline code but will not process multicolumn commands and some other specialized content.</p>
+</section>
+<section id="copy-as-sagemath">
+<h3>Copy as SageMath<a class="headerlink" href="#copy-as-sagemath" title="Permalink to this heading">#</a></h3>
+<p>The Copy as SageMath will formulate the grid as a SageMath matrix. For example, the standard grid</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">1  4  7</span>
+<span class="go">2  5  8</span>
+<span class="go">3  6  9</span>
+</pre></div>
+</div>
+<p>will copy as</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">matrix(QQ,[[1,4,7],[2,5,8],[3,6,9]])</span>
+</pre></div>
+</div>
+</section>
+<section id="copy-as-maxima">
+<h3>Copy as Maxima<a class="headerlink" href="#copy-as-maxima" title="Permalink to this heading">#</a></h3>
+<p>The Copy as Maxima will formulate the grid as a Maxima matrix. For example, the standard grid</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">1  4  7</span>
+<span class="go">2  5  8</span>
+<span class="go">3  6  9</span>
+</pre></div>
+</div>
+<p>will copy as</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">matrix([1,4,7],[2,5,8],[3,6,9])</span>
+</pre></div>
+</div>
+</section>
+<section id="copy-as-geogebra">
+<h3>Copy as GeoGebra<a class="headerlink" href="#copy-as-geogebra" title="Permalink to this heading">#</a></h3>
+<p>The Copy as GeoGebra will formulate the grid as a GeoGebra matrix, that is { } delimited. For example, the standard grid</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">1  4  7</span>
+<span class="go">2  5  8</span>
+<span class="go">3  6  9</span>
+</pre></div>
+</div>
+<p>copies as</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">{{1,4,7},{2,5,8},{3,6,9}}</span>
+</pre></div>
+</div>
+</section>
+<section id="copy-delimited">
+<h3>Copy […] Delimited<a class="headerlink" href="#copy-delimited" title="Permalink to this heading">#</a></h3>
+<p>This copies as [ ] delimited string. For example, the standard grid</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">1  4  7</span>
+<span class="go">2  5  8</span>
+<span class="go">3  6  9</span>
+</pre></div>
+</div>
+<p>copies as</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">[[1,4,7],[2,5,8],[3,6,9]]</span>
+</pre></div>
+</div>
+</section>
+<section id="id1">
+<h3>Copy {…} Delimited<a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h3>
+<p>This copies as { } delimited string. For example, the standard grid</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">1  4  7</span>
+<span class="go">2  5  8</span>
+<span class="go">3  6  9</span>
+</pre></div>
+</div>
+<p>copies as</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">{{1,4,7},{2,5,8},{3,6,9}}</span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h3>Copy &lt;…&gt; Delimited<a class="headerlink" href="#id2" title="Permalink to this heading">#</a></h3>
+<p>This copies as &lt; &gt; delimited string. For example, the standard grid</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">1  4  7</span>
+<span class="go">2  5  8</span>
+<span class="go">3  6  9</span>
+</pre></div>
+</div>
+<p>copies as</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">&lt;&lt;1,4,7&gt;,&lt;2,5,8&gt;,&lt;3,6,9&gt;&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="copy-as-html">
+<h3>Copy as HTML<a class="headerlink" href="#copy-as-html" title="Permalink to this heading">#</a></h3>
+<p>This copies the table to HTML markup. For example, the standard grid</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">1  4  7</span>
+<span class="go">2  5  8</span>
+<span class="go">3  6  9</span>
+</pre></div>
+</div>
+<p>copies as</p>
+<img alt="_images/HTMLEx.png" src="_images/HTMLEx.png" />
+</section>
+<section id="undo-redo">
+<h3>Undo &amp; Redo<a class="headerlink" href="#undo-redo" title="Permalink to this heading">#</a></h3>
+<p>The program also has undo and redo features, using the menu or the standard Ctrl+Z and Ctrl+Shift+Z respectively. Every time the grid is changed the undo history is updated with the new grid. The program does not limit the number of undos that are possible.</p>
+</section>
+</section>
+<section id="table-options">
+<h2>Table Options<a class="headerlink" href="#table-options" title="Permalink to this heading">#</a></h2>
+<p>The table options allow you to manipulate the data grid. Adding and deleting rows and columns, adjusting of cell sizes, and a few specialized operations.</p>
+<section id="adding-rows-and-columns">
+<h3>Adding Rows and Columns<a class="headerlink" href="#adding-rows-and-columns" title="Permalink to this heading">#</a></h3>
+<p>Adding rows and columns will insert a row or column either before or after the selected region. There must be at least one cell currently selected on the grid or no row or column will be inserted. If multiple cells are selected the added row will be added directly above or below the selected block of cells. The same is true for added columns.</p>
+</section>
+<section id="deleting-rows-and-columns">
+<h3>Deleting Rows and Columns<a class="headerlink" href="#deleting-rows-and-columns" title="Permalink to this heading">#</a></h3>
+<p>When deleting rows or columns, the program will delete all of the rows or columns in the selected region. Again at least one cell must be selected for any rows or columns to be deleted.</p>
+</section>
+<section id="grid-manipulation-options">
+<h3>Grid Manipulation Options<a class="headerlink" href="#grid-manipulation-options" title="Permalink to this heading">#</a></h3>
+<p>The Table menu has several manipulation options that come in handy from time to time.</p>
+<ul class="simple">
+<li><p>The Transpose option will transpose the grid, that is, turn rows to columns and columns to rows.</p></li>
+<li><p>The Trim option will remove any leading and trailing spaces for each data item in the grid.</p></li>
+<li><p>The Fill option will allow the user to input some text and it will fill all selected cells with that text.</p></li>
+</ul>
+</section>
+<section id="clearing">
+<h3>Clearing<a class="headerlink" href="#clearing" title="Permalink to this heading">#</a></h3>
+<p>The Clear All option will remove all data from the grid. Note that this does not clear the grid history. So if you mistakenly clear the grid an undo will bring the data back.</p>
+</section>
+</section>
+<section id="view-options">
+<h2>View Options<a class="headerlink" href="#view-options" title="Permalink to this heading">#</a></h2>
+<section id="cell-size-adjustments">
+<h3>Cell Size Adjustments<a class="headerlink" href="#cell-size-adjustments" title="Permalink to this heading">#</a></h3>
+<p>The automatic size adjustments will adjust the row height and column widths to match the data in the grid. The default size on startup and when adding rows or columns may not fit the contents of the cells, these options will make those adjustments.</p>
+</section>
+<section id="table-font-size">
+<h3>Table Font Size<a class="headerlink" href="#table-font-size" title="Permalink to this heading">#</a></h3>
+<p>These options allow the user to change the size of the table font by increasing or decreasing the size by one point each time an to reset the font size to the default size.</p>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">LaTeX Table Creator User’s Guide</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="exportops.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">LaTeX Export Options</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#file-options">File Options</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#new">New</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#open">Open</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#save-as">Save As…</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#edit-options">Edit Options</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#copy-selected-copy-all-select-all-paste-options">Copy Selected, Copy All, Select All, &amp; Paste Options</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#copy-as-latex">Copy as LaTeX</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paste-from-latex">Paste from LaTeX</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#copy-as-sagemath">Copy as SageMath</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#copy-as-maxima">Copy as Maxima</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#copy-as-geogebra">Copy as GeoGebra</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#copy-delimited">Copy […] Delimited</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Copy {…} Delimited</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Copy &lt;…&gt; Delimited</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#copy-as-html">Copy as HTML</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#undo-redo">Undo &amp; Redo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#table-options">Table Options</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adding-rows-and-columns">Adding Rows and Columns</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deleting-rows-and-columns">Deleting Rows and Columns</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#grid-manipulation-options">Grid Manipulation Options</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clearing">Clearing</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#view-options">View Options</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cell-size-adjustments">Cell Size Adjustments</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#table-font-size">Table Font Size</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025, Don Spickler.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item"><p class="last-updated">
+  Last updated on Monday, June 16, 2025  -  09:40 AM.
+  <br/>
+</p></div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.2.1.
+    <br/>
+  </p>
+</div>
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

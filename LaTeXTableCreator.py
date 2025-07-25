@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Aug  6 11:57:31 2021
-Revised: 8/10/2021
+Revised: 6/14/2025
 
 @author: Don Spickler
 
@@ -13,24 +13,998 @@ the user selects.
 """
 
 import pickle
+import platform
 import sys
 import os
 
 from PySide6.QtCore import Qt, QSize, QDir
 from PySide6.QtGui import QIcon, QAction
-from PySide6.QtWidgets import (QApplication, QMainWindow, QStatusBar,
-                               QToolBar, QDockWidget, QSpinBox, QHBoxLayout,
-                               QVBoxLayout, QWidget, QLabel, QScrollArea, QMessageBox,
-                               QInputDialog, QFileDialog, QDialog)
-
-from CSS_Class import appcss
-from LC_Table import LC_Table
-from OptionsPane import OptionsEditorPane
+from PySide6.QtWidgets import *
 
 import webbrowser
 
 # For the Mac OS
 os.environ['QT_MAC_WANTS_LAYER'] = '1'
+
+
+class LTCappcss:
+    def __init__(self):
+        super().__init__()
+        self.css = """
+            QMenu::separator { 
+                background-color: #BBBBBB; 
+                height: 1px; 
+                margin: 2px 5px 2px 5px;
+            }
+            
+            QMenu {padding: 4px 0px 4px 0px; }
+
+        """
+
+    def getCSS(self):
+        return self.css
+
+class LTC_Table(QTableWidget):
+    def __init__(self, parent=None):
+        super(LTC_Table, self).__init__(parent)
+        self.setRowCount(3)
+        self.setColumnCount(3)
+        self.setSelectionMode(QAbstractItemView.ContiguousSelection)
+        self.setCurrentCell(0, 0)
+        self.cellChanged.connect(self.onCellChanged)
+        self.tableHistory = []
+        self.historyPos = 0
+        self.addToHistory()
+        ft = self.font()
+        self.fontPointSize = 12
+        ft.setPointSize(self.fontPointSize)
+        self.setFont(ft)
+
+    def keyPressEvent(self, event):
+        """
+        Overrides the key event processing.  Sends untracked keys to parent.
+        """
+        key = event.key()
+
+        if key == Qt.Key_Return or key == Qt.Key_Enter:
+            row = self.currentRow()
+            col = self.currentColumn()
+            row = row + 1
+            if row >= self.rowCount():
+                row = 0
+                col = col + 1
+            if col >= self.columnCount():
+                col = 0
+            self.setCurrentCell(row, col)
+        elif key == Qt.Key_Delete:
+            self.blockSignals(True)
+            rng = self.selectedCellRanges()
+            if len(rng) > 0:
+                for i in range(rng[0][0], rng[0][1] + 1):
+                    for j in range(rng[1][0], rng[1][1] + 1):
+                        self.setItem(i, j, QTableWidgetItem(''))
+
+            self.addToHistory()
+            self.blockSignals(False)
+        else:
+            super(LTC_Table, self).keyPressEvent(event)
+
+    def increaseFontSize(self):
+        sz = self.fontPointSize
+        if sz < 72:
+            sz += 1
+            self.adjustFontSize(sz)
+
+    def decreaseFontSize(self):
+        sz = self.fontPointSize
+        if sz > 7:
+            sz -= 1
+            self.adjustFontSize(sz)
+
+    def resetFontSize(self):
+        self.adjustFontSize(12)
+
+    def adjustFontSize(self, sz):
+        ft = self.font()
+        self.fontPointSize = sz
+        ft.setPointSize(self.fontPointSize)
+        self.setFont(ft)
+
+    def addToHistory(self):
+        """
+        Adds the curent table to the undo/redo history.  Removes stored tables
+        from the current table position to the end of the list.
+        """
+        currentTable = self.getTableContents()
+
+        if len(self.tableHistory) > 0:
+            while self.historyPos != len(self.tableHistory) - 1:
+                self.tableHistory.pop(len(self.tableHistory) - 1)
+
+        self.tableHistory.append(currentTable)
+        self.historyPos = len(self.tableHistory) - 1
+        self.setFocus()
+
+    def onCellChanged(self):
+        """
+        if a cell is changed the new table is stored.
+        """
+        self.addToHistory()
+
+    def selectedCellRanges(self):
+        """
+        Returns a lit of the upper left and lower right positions of the selected
+        block of cells.
+        """
+        selitems = self.selectedIndexes()
+        returnList = []
+        if len(selitems) > 0:
+            minrow = selitems[0].row()
+            maxrow = selitems[0].row()
+            mincol = selitems[0].column()
+            maxcol = selitems[0].column()
+            for i in selitems:
+                if i.row() < minrow:
+                    minrow = i.row()
+                if i.row() > maxrow:
+                    maxrow = i.row()
+                if i.column() < mincol:
+                    mincol = i.column()
+                if i.column() > maxcol:
+                    maxcol = i.column()
+
+            returnList.append([minrow, maxrow])
+            returnList.append([mincol, maxcol])
+        return returnList
+
+    def resizeTable(self, r, c):
+        """
+        Resizes the table to r rows and c columns.
+        """
+        self.blockSignals(True)
+        self.setColumnCount(c)
+        self.setRowCount(r)
+        self.addToHistory()
+        self.blockSignals(False)
+
+    def closeEditing(self):
+        """
+        Stops the editing of a cell and takes the current edit as its contents.
+        """
+        # Trick to end editing of all cells, probably a better way to do this.
+        self.setEnabled(False)
+        self.setEnabled(True)
+
+    def getTableContents(self):
+        """
+        Returns a list of row lists of table contents for the entire table.
+        """
+        self.closeEditing()
+        tablelist = []
+        for i in range(self.rowCount()):
+            rowlist = []
+            for j in range(self.columnCount()):
+                item = self.item(i, j)
+                if item == None:
+                    rowlist.append('')
+                else:
+                    rowlist.append(item.text())
+            tablelist.append(rowlist)
+        return tablelist
+
+    def getSelectedTableContents(self):
+        """
+        Returns a list of row lists of selected table contents.
+        """
+        self.closeEditing()
+        tablelist = []
+        rng = self.selectedCellRanges()
+        if len(rng) > 0:
+            for i in range(rng[0][0], rng[0][1] + 1):
+                rowlist = []
+                for j in range(rng[1][0], rng[1][1] + 1):
+                    item = self.item(i, j)
+                    if item == None:
+                        rowlist.append('')
+                    else:
+                        rowlist.append(item.text())
+                tablelist.append(rowlist)
+        return tablelist
+
+    def paste(self, items):
+        """
+        Pastes the list of row lists to the table, expanding the table size if
+        necessary.
+        """
+        self.blockSignals(True)
+        rows = len(items)
+        cols = 0
+        for i in range(rows):
+            if len(items[i]) > cols:
+                cols = len(items[i])
+
+        rng = self.selectedCellRanges()
+        if len(rng) > 0:
+            startrow = rng[0][0]
+            startcol = rng[1][0]
+
+            if rows + startrow > self.rowCount():
+                if rows + startrow > 10000:
+                    rows = 10000 - startrow
+                self.setRowCount(rows + startrow)
+
+            if cols + startcol > self.columnCount():
+                if cols + startcol > 1000:
+                    cols = 1000 - startcol
+                self.setColumnCount(cols + startcol)
+
+            for i in range(startrow, rows + startrow):
+                for j in range(startcol, cols + startcol):
+                    self.setItem(i, j, QTableWidgetItem(items[i - startrow][j - startcol]))
+
+        self.addToHistory()
+        self.blockSignals(False)
+
+    def getUpperLeftSelectedCell(self):
+        """
+        Returns the index of the upper left selected cell.
+        """
+        rng = self.selectedCellRanges()
+        if len(rng) > 0:
+            return [rng[0][0], rng[1][0]]
+        else:
+            return []
+
+    def getLowerRightSelectedCell(self):
+        """
+        Returns the index of the lower right selected cell.
+        """
+        rng = self.selectedCellRanges()
+        if len(rng) > 0:
+            return [rng[0][1], rng[1][1]]
+        else:
+            return []
+
+    def addRowAbove(self):
+        """
+        Adds a row above the selected cells.
+        """
+        start = self.getUpperLeftSelectedCell()
+        if len(start) > 0:
+            self.insertRow(start[0])
+        self.addToHistory()
+
+    def addRowBelow(self):
+        """
+        Adds a row below the selected cells.
+        """
+        start = self.getLowerRightSelectedCell()
+        if len(start) > 0:
+            self.insertRow(start[0] + 1)
+        self.addToHistory()
+
+    def addColumnBefore(self):
+        """
+        Adds a column before the selected cells.
+        """
+        start = self.getUpperLeftSelectedCell()
+        if len(start) > 0:
+            self.insertColumn(start[1])
+        self.addToHistory()
+
+    def addColumnAfter(self):
+        """
+        Adds a column after the selected cells.
+        """
+        start = self.getLowerRightSelectedCell()
+        if len(start) > 0:
+            self.insertColumn(start[1] + 1)
+        self.addToHistory()
+
+    def deleteRows(self):
+        """
+        Deletes the selected rows.
+        """
+        rng = self.selectedCellRanges()
+        if len(rng) > 0:
+            start = rng[0][0]
+            end = rng[0][1]
+            for i in range(end - start + 1):
+                self.removeRow(start)
+        if self.rowCount() == 0:
+            self.insertRow(0)
+        self.addToHistory()
+
+    def deleteColumns(self):
+        """
+        Deletes the selected columns.
+        """
+        rng = self.selectedCellRanges()
+        if len(rng) > 0:
+            start = rng[1][0]
+            end = rng[1][1]
+            for i in range(end - start + 1):
+                self.removeColumn(start)
+        if self.columnCount() == 0:
+            self.insertColumn(0)
+        self.addToHistory()
+
+    def deleteRowsColumns(self):
+        """
+        Deletes the selected rows and columns.
+        """
+        rng = self.selectedCellRanges()
+        if len(rng) > 0:
+            startr = rng[0][0]
+            endr = rng[0][1]
+            startc = rng[1][0]
+            endc = rng[1][1]
+            for i in range(endr - startr + 1):
+                self.removeRow(startr)
+
+            if self.rowCount() == 0:
+                self.insertRow(0)
+
+            for i in range(endc - startc + 1):
+                self.removeColumn(startc)
+
+            if self.columnCount() == 0:
+                self.insertColumn(0)
+
+        self.addToHistory()
+
+    def transpose(self):
+        """
+        Transposes the grid.
+        """
+        self.blockSignals(True)
+
+        items = self.getTableContents()
+        rows = self.rowCount()
+        cols = self.columnCount()
+
+        tablelist = []
+        for j in range(cols):
+            collist = []
+            for i in range(rows):
+                item = items[i][j]
+                if item == None:
+                    collist.append('')
+                else:
+                    collist.append(item)
+            tablelist.append(collist)
+
+        self.setRowCount(1)
+        self.setColumnCount(1)
+        self.setCurrentCell(0, 0)
+        self.paste(tablelist)
+
+        self.setCurrentCell(0, 0)
+        self.addToHistory()
+        self.blockSignals(False)
+
+    def trimcells(self):
+        """
+        Trims the entries in each cell.
+        """
+        self.blockSignals(True)
+        for i in range(self.rowCount()):
+            for j in range(self.columnCount()):
+                item = self.item(i, j)
+
+                if item == None:
+                    item = ''
+                else:
+                    item = item.text()
+
+                item = item.lstrip()
+                item = item.rstrip()
+                self.setItem(i, j, QTableWidgetItem(item))
+
+        self.addToHistory()
+        self.blockSignals(False)
+
+    def fillcells(self, fill_text):
+        """
+        Fills the cells with the given text.
+        """
+        self.blockSignals(True)
+        for i in range(self.rowCount()):
+            for j in range(self.columnCount()):
+                self.setItem(i, j, QTableWidgetItem(fill_text))
+
+        self.addToHistory()
+        self.blockSignals(False)
+
+    def clearTable(self):
+        """
+        Clears the table contents.
+        """
+        self.clear()
+        self.addToHistory()
+
+    def newtable(self):
+        """
+        Clears the table contents and resets the size to 3 X 3.
+        """
+        self.setRowCount(3)
+        self.setColumnCount(3)
+        self.clear()
+        self.setCurrentCell(0, 0)
+        self.addToHistory()
+
+    def loadItems(self, currentTable):
+        """
+        Loads the items (list of row lists) into the table.
+        """
+        self.blockSignals(True)
+        rows = len(currentTable)
+        cols = len(currentTable[0])
+        self.setRowCount(rows)
+        self.setColumnCount(cols)
+
+        for i in range(self.rowCount()):
+            for j in range(self.columnCount()):
+                self.setItem(i, j, QTableWidgetItem(currentTable[i][j]))
+        self.blockSignals(False)
+
+    def undo(self):
+        """
+        Processes an undo.
+        """
+        self.historyPos = self.historyPos - 1
+        if self.historyPos < 0:
+            self.historyPos = 0
+
+        currentTable = self.tableHistory[self.historyPos]
+        self.loadItems(currentTable)
+
+    def redo(self):
+        """
+        Processes a redo.
+        """
+        self.historyPos = self.historyPos + 1
+        if self.historyPos >= len(self.tableHistory):
+            self.historyPos = len(self.tableHistory) - 1
+
+        currentTable = self.tableHistory[self.historyPos]
+        self.loadItems(currentTable)
+
+class LTCOptionsEditorPane(QWidget):
+
+    def __init__(self):
+        super().__init__()
+        self.initializeUI()
+
+    def initializeUI(self):
+        """
+        Set up options widget.
+        """
+
+        # Make the Grid Type selections
+        types = ["longtable", "tabular", "tabbing", "array", "matrix", "Special Matrix"]
+
+        self.types_selector = QComboBox()
+        self.types_selector.addItems(types)
+        self.types_selector.currentIndexChanged.connect(self.typeChanged)
+
+        # Create the separate option panels for each type.
+        self.createTableOptions()
+        self.createTabbingOptions()
+        self.createArrayOptions()
+        self.createMatrixOptions()
+        self.createSpecialMatrixOptions()
+
+        # Make the Includes selections
+        self.include_math_mode = QCheckBox("Math Mode")
+        self.include_array_stretch = QCheckBox("Array Stretch")
+
+        include_layout = QVBoxLayout()
+        include_layout.addWidget(self.include_math_mode)
+        include_layout.addWidget(self.include_array_stretch)
+
+        include_group = QGroupBox("Includes")
+        include_group.setLayout(include_layout)
+
+        grid_type_layout = QVBoxLayout()
+        grid_type_layout.addWidget(self.types_selector)
+
+        # Make Grid type selection.
+        grid_type_group = QGroupBox("Grid Type")
+        grid_type_group.setLayout(grid_type_layout)
+
+        app_form_layout = QFormLayout()
+        app_form_layout.addRow(grid_type_group)
+
+        self.OptionsLabel = QLabel("Longtable/Tabular Options")
+        #self.OptionsLabel.setStyleSheet("font-weight: bold;")
+        self.OptionsLabel.setStyleSheet("text-decoration: underline;")
+
+        # Place specific type panels into a stacked widget.
+        self.options_stack = QStackedWidget()
+        self.options_stack.addWidget(self.table_options_widget)
+        self.options_stack.addWidget(self.tabbing_options_widget)
+        self.options_stack.addWidget(self.array_options_widget)
+        self.options_stack.addWidget(self.matrix_options_widget)
+        self.options_stack.addWidget(self.SpecialMatrix_options_widget)
+
+        # Put the selection panes together into one widget.
+        app_form_layout.addRow(self.OptionsLabel)
+        app_form_layout.addRow(self.options_stack)
+        app_form_layout.addRow(include_group)
+
+        pane_layout = QVBoxLayout()
+        pane_layout.addLayout(app_form_layout)
+        pane_layout.addStretch(1)
+
+        self.setLayout(pane_layout)
+
+    def typeChanged(self):
+        """
+        Process a type change when the user selects a different grid type.
+        """
+        gridtype = self.types_selector.currentText()
+
+        # types = ["longtable", "tabular", "tabbing", "array", "matrix", "Special Matrix"]
+        index = 0
+        self.include_array_stretch.setVisible(True)
+        if (gridtype == "longtable") or (gridtype == "tabular"):
+            index = 0
+            self.OptionsLabel.setText("Longtable/Tabular Options")
+        elif (gridtype == "tabbing"):
+            index = 1
+            self.include_array_stretch.setVisible(False)
+            self.OptionsLabel.setText("Tabbing Options")
+        elif (gridtype == "array"):
+            index = 2
+            self.OptionsLabel.setText("Array Options")
+        elif (gridtype == "matrix"):
+            index = 3
+            self.OptionsLabel.setText("Matrix Options")
+        elif (gridtype == "Special Matrix"):
+            index = 4
+            self.OptionsLabel.setText("Special Matrix Options")
+
+        count = self.options_stack.count()
+        for i in range(count):
+            widget = self.options_stack.widget(i)
+            widget.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Ignored)
+
+        self.options_stack.setCurrentIndex(index)
+        self.options_stack.widget(index).setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        self.options_stack.adjustSize()
+        self.adjustSize()
+
+    def createTabbingOptions(self):
+        """
+        Create the options GUI for the tabbing grid type.
+        """
+        self.tabbibg_column_width = QSpinBox()
+        self.tabbibg_column_width.setRange(0, 1000)
+        self.tabbibg_column_width.setMinimumWidth(75)
+        self.tabbibg_column_width.setValue(20)
+        self.tabbibg_column_width.setSuffix(" pt")
+
+        hbox = QHBoxLayout()
+        hbox.addWidget(self.tabbibg_column_width)
+
+        column_align_group = QGroupBox("Column Width")
+        column_align_group.setLayout(hbox)
+
+        self.tabbing_options_widget = QWidget()
+        tabbing_options_widget_layout = QFormLayout()
+        tabbing_options_widget_layout.addRow(column_align_group)
+
+        self.tabbing_options_widget.setLayout(tabbing_options_widget_layout)
+
+    def createMatrixOptions(self):
+        """
+        Create the options GUI for the matrix grid type.
+        """
+
+        # Make the Decoration selections
+        self.matrix_Dec_None = QRadioButton("None")
+        self.matrix_Dec_Paren = QRadioButton("( )")
+        self.matrix_Dec_Bracket = QRadioButton("[ ]")
+        self.matrix_Dec_Det = QRadioButton("| |")
+
+        dec_bg = QButtonGroup(self)
+        dec_bg.addButton(self.matrix_Dec_None)
+        dec_bg.addButton(self.matrix_Dec_Paren)
+        dec_bg.addButton(self.matrix_Dec_Bracket)
+        dec_bg.addButton(self.matrix_Dec_Det)
+
+        self.matrix_Dec_None.setChecked(True)
+
+        dec_layout = QHBoxLayout()
+        dec_layout.addWidget(self.matrix_Dec_None)
+        dec_layout.addWidget(self.matrix_Dec_Paren)
+        dec_layout.addWidget(self.matrix_Dec_Bracket)
+        dec_layout.addWidget(self.matrix_Dec_Det)
+        dec_layout.addStretch()
+
+        dec_group = QGroupBox("Decoration")
+        dec_group.setLayout(dec_layout)
+
+        self.matrix_options_widget = QWidget()
+        array_options_widget_layout = QFormLayout()
+        array_options_widget_layout.addRow(dec_group)
+
+        self.matrix_options_widget.setLayout(array_options_widget_layout)
+
+    def createSpecialMatrixOptions(self):
+        """
+        Create the options GUI for the special matrix grid type.
+        """
+
+        # Make matrix type selections.
+        self.SpecialMatrix_p = QRadioButton("pmatrix")
+        self.SpecialMatrix_b = QRadioButton("bmatrix")
+        self.SpecialMatrix_v = QRadioButton("vmatrix")
+        self.SpecialMatrix_V = QRadioButton("Vmatrix")
+
+        SM_bg = QButtonGroup(self)
+        SM_bg.addButton(self.SpecialMatrix_p)
+        SM_bg.addButton(self.SpecialMatrix_b)
+        SM_bg.addButton(self.SpecialMatrix_v)
+        SM_bg.addButton(self.SpecialMatrix_V)
+
+        self.SpecialMatrix_p.setChecked(True)
+
+        SM_layout = QVBoxLayout()
+        SM_layout.addWidget(self.SpecialMatrix_p)
+        SM_layout.addWidget(self.SpecialMatrix_b)
+        SM_layout.addWidget(self.SpecialMatrix_v)
+        SM_layout.addWidget(self.SpecialMatrix_V)
+        SM_layout.addStretch()
+
+        SM_group = QGroupBox("Matrix Type")
+        SM_group.setLayout(SM_layout)
+
+        self.SpecialMatrix_options_widget = QWidget()
+        SM_options_widget_layout = QFormLayout()
+        SM_options_widget_layout.addRow(SM_group)
+
+        self.SpecialMatrix_options_widget.setLayout(SM_options_widget_layout)
+
+    def createArrayOptions(self):
+        """
+        Create the options GUI for the array grid type.
+        """
+
+        # Make the Column Alignment selections
+        self.array_column_align_left = QRadioButton("Left")
+        self.array_column_align_center = QRadioButton("Center")
+        self.array_column_align_right = QRadioButton("Right")
+
+        column_align_bg = QButtonGroup(self)
+        column_align_bg.addButton(self.array_column_align_left)
+        column_align_bg.addButton(self.array_column_align_center)
+        column_align_bg.addButton(self.array_column_align_right)
+
+        self.array_column_align_left.setChecked(True)
+
+        column_align_layout = QHBoxLayout()
+        column_align_layout.addWidget(self.array_column_align_left)
+        column_align_layout.addWidget(self.array_column_align_center)
+        column_align_layout.addWidget(self.array_column_align_right)
+        column_align_layout.addStretch()
+
+        column_align_group = QGroupBox("Column Alignment")
+        column_align_group.setLayout(column_align_layout)
+
+        # Make the Border and Column Divisions selections
+        self.array_table_border = QCheckBox("Table Border")
+        self.array_first_row_division = QCheckBox("Division After First Row")
+        self.array_all_row_division = QCheckBox("Division on All Rows")
+        self.array_first_column_division = QCheckBox("Division After First Column")
+        self.array_all_column_division = QCheckBox("Division After All Columns")
+
+        border_layout = QVBoxLayout()
+        border_layout.addWidget(self.array_table_border)
+        border_layout.addWidget(self.array_first_row_division)
+        border_layout.addWidget(self.array_all_row_division)
+        border_layout.addWidget(self.array_first_column_division)
+        border_layout.addWidget(self.array_all_column_division)
+
+        border_type_group = QGroupBox("Border and Column Divisions")
+        border_type_group.setLayout(border_layout)
+
+        # Make the Decoration selections
+        self.array_Dec_None = QRadioButton("None")
+        self.array_Dec_Paren = QRadioButton("( )")
+        self.array_Dec_Bracket = QRadioButton("[ ]")
+        self.array_Dec_Det = QRadioButton("| |")
+
+        dec_bg = QButtonGroup(self)
+        dec_bg.addButton(self.array_Dec_None)
+        dec_bg.addButton(self.array_Dec_Paren)
+        dec_bg.addButton(self.array_Dec_Bracket)
+        dec_bg.addButton(self.array_Dec_Det)
+
+        self.array_Dec_None.setChecked(True)
+
+        dec_layout = QHBoxLayout()
+        dec_layout.addWidget(self.array_Dec_None)
+        dec_layout.addWidget(self.array_Dec_Paren)
+        dec_layout.addWidget(self.array_Dec_Bracket)
+        dec_layout.addWidget(self.array_Dec_Det)
+        dec_layout.addStretch()
+
+        dec_group = QGroupBox("Decoration")
+        dec_group.setLayout(dec_layout)
+
+        self.array_options_widget = QWidget()
+        array_options_widget_layout = QFormLayout()
+        array_options_widget_layout.addRow(column_align_group)
+        array_options_widget_layout.addRow(border_type_group)
+        array_options_widget_layout.addRow(dec_group)
+
+        self.array_options_widget.setLayout(array_options_widget_layout)
+
+    def createTableOptions(self):
+        """
+        Create the options GUI for the tabular and long table grid types.
+        """
+
+        # Make the Column Alignment selections
+        self.column_align_left = QRadioButton("Left")
+        self.column_align_center = QRadioButton("Center")
+        self.column_align_right = QRadioButton("Right")
+
+        column_align_bg = QButtonGroup(self)
+        column_align_bg.addButton(self.column_align_left)
+        column_align_bg.addButton(self.column_align_center)
+        column_align_bg.addButton(self.column_align_right)
+
+        self.column_align_left.setChecked(True)
+
+        column_align_layout = QHBoxLayout()
+        column_align_layout.addWidget(self.column_align_left)
+        column_align_layout.addWidget(self.column_align_center)
+        column_align_layout.addWidget(self.column_align_right)
+        column_align_layout.addStretch()
+
+        column_align_group = QGroupBox("Column Alignment")
+        column_align_group.setLayout(column_align_layout)
+
+        # Make the Border and Column Divisions selections
+        self.table_border = QCheckBox("Table Border")
+        self.first_row_division = QCheckBox("Division After First Row")
+        self.all_row_division = QCheckBox("Division on All Rows")
+        self.first_column_division = QCheckBox("Division After First Column")
+        self.all_column_division = QCheckBox("Division After All Columns")
+
+        border_layout = QVBoxLayout()
+        border_layout.addWidget(self.table_border)
+        border_layout.addWidget(self.first_row_division)
+        border_layout.addWidget(self.all_row_division)
+        border_layout.addWidget(self.first_column_division)
+        border_layout.addWidget(self.all_column_division)
+
+        border_type_group = QGroupBox("Border and Column Divisions")
+        border_type_group.setLayout(border_layout)
+
+        # Make the Column Header selections
+        self.column_header_left = QRadioButton("Left")
+        self.column_header_center = QRadioButton("Center")
+        self.column_header_right = QRadioButton("Right")
+
+        column_header_bg = QButtonGroup(self)
+        column_header_bg.addButton(self.column_header_left)
+        column_header_bg.addButton(self.column_header_center)
+        column_header_bg.addButton(self.column_header_right)
+
+        self.column_header_left.setChecked(True)
+
+        column_header_align_layout = QHBoxLayout()
+        column_header_align_layout.addWidget(self.column_header_left)
+        column_header_align_layout.addWidget(self.column_header_center)
+        column_header_align_layout.addWidget(self.column_header_right)
+        column_header_align_layout.addStretch()
+
+        self.column_header_bold = QCheckBox("Bold")
+        self.column_header_italic = QCheckBox("Italic")
+        self.column_header_underline = QCheckBox("Underline")
+
+        column_header_style_layout = QHBoxLayout()
+        column_header_style_layout.addWidget(self.column_header_bold)
+        column_header_style_layout.addWidget(self.column_header_italic)
+        column_header_style_layout.addWidget(self.column_header_underline)
+        column_header_style_layout.addStretch()
+
+        self.column_header_rows = QSpinBox()
+        self.column_header_rows.setRange(1, 10000)
+        self.column_header_rows.setMinimumWidth(75)
+        self.column_header_rows.setValue(1)
+
+        column_header_rows_layout = QHBoxLayout()
+        column_header_rows_layout.addWidget(QLabel("Number of Rows"))
+        column_header_rows_layout.addWidget(self.column_header_rows)
+        column_header_rows_layout.addStretch()
+
+        column_header_layout = QVBoxLayout()
+        column_header_layout.addLayout(column_header_align_layout)
+        column_header_layout.addLayout(column_header_style_layout)
+        column_header_layout.addLayout(column_header_rows_layout)
+
+        self.column_header_group = QGroupBox("Column Header")
+        self.column_header_group.setLayout(column_header_layout)
+        self.column_header_group.setCheckable(True)
+        self.column_header_group.setChecked(False)
+
+        # Make the Row Header selections
+        self.row_header_left = QRadioButton("Left")
+        self.row_header_center = QRadioButton("Center")
+        self.row_header_right = QRadioButton("Right")
+
+        row_header_bg = QButtonGroup(self)
+        row_header_bg.addButton(self.row_header_left)
+        row_header_bg.addButton(self.row_header_center)
+        row_header_bg.addButton(self.row_header_right)
+
+        self.row_header_left.setChecked(True)
+
+        row_header_align_layout = QHBoxLayout()
+        row_header_align_layout.addWidget(self.row_header_left)
+        row_header_align_layout.addWidget(self.row_header_center)
+        row_header_align_layout.addWidget(self.row_header_right)
+        row_header_align_layout.addStretch()
+
+        self.row_header_bold = QCheckBox("Bold")
+        self.row_header_italic = QCheckBox("Italic")
+        self.row_header_underline = QCheckBox("Underline")
+
+        row_header_style_layout = QHBoxLayout()
+        row_header_style_layout.addWidget(self.row_header_bold)
+        row_header_style_layout.addWidget(self.row_header_italic)
+        row_header_style_layout.addWidget(self.row_header_underline)
+        row_header_style_layout.addStretch()
+
+        self.row_header_columns = QSpinBox()
+        self.row_header_columns.setRange(1, 100)
+        self.row_header_columns.setMinimumWidth(75)
+        self.row_header_columns.setValue(1)
+
+        row_header_columns_layout = QHBoxLayout()
+        row_header_columns_layout.addWidget(QLabel("Number of Columns"))
+        row_header_columns_layout.addWidget(self.row_header_columns)
+        row_header_columns_layout.addStretch()
+
+        row_header_layout = QVBoxLayout()
+        row_header_layout.addLayout(row_header_align_layout)
+        row_header_layout.addLayout(row_header_style_layout)
+        row_header_layout.addLayout(row_header_columns_layout)
+
+        self.row_header_group = QGroupBox("Row Header")
+        self.row_header_group.setLayout(row_header_layout)
+        self.row_header_group.setCheckable(True)
+        self.row_header_group.setChecked(False)
+
+        self.table_options_widget = QWidget()
+        table_options_widget_layout = QFormLayout()
+        table_options_widget_layout.addRow(column_align_group)
+        table_options_widget_layout.addRow(border_type_group)
+        table_options_widget_layout.addRow(self.column_header_group)
+        table_options_widget_layout.addRow(self.row_header_group)
+
+        self.table_options_widget.setLayout(table_options_widget_layout)
+
+    def getOptionsInfo(self):
+        """
+        Create a dictionary of all options from the options panel.
+        """
+
+        info = {}
+        info['Grid Type'] = self.types_selector.currentText()
+
+        # Longtable/Tabular Options
+        # Longtable/Tabular Alignment
+        key = 'Table Column Align'
+        if self.column_align_left.isChecked():
+            info[key] = 'Left'
+        elif self.column_align_center.isChecked():
+            info[key] = 'Center'
+        else:
+            info[key] = 'Right'
+
+        # Longtable/Tabular Border
+        info['Table Border'] = self.table_border.isChecked()
+        info['Table Division First Row'] = self.first_row_division.isChecked()
+        info['Table Division All Rows'] = self.all_row_division.isChecked()
+        info['Table Division First Column'] = self.first_column_division.isChecked()
+        info['Table Division All Columns'] = self.all_column_division.isChecked()
+
+        # Longtable/Tabular Column Headers
+        info['Table Column Header'] = self.column_header_group.isChecked()
+        key = 'Table Column Header Align'
+        if self.column_header_left.isChecked():
+            info[key] = 'Left'
+        elif self.column_header_center.isChecked():
+            info[key] = 'Center'
+        else:
+            info[key] = 'Right'
+
+        info['Table Column Header Bold'] = self.column_header_bold.isChecked()
+        info['Table Column Header Italic'] = self.column_header_italic.isChecked()
+        info['Table Column Header Underline'] = self.column_header_underline.isChecked()
+        info['Table Column Header Rows'] = self.column_header_rows.value()
+
+        # Longtable/Tabular Row Headers
+        info['Table Row Header'] = self.row_header_group.isChecked()
+        key = 'Table Row Header Align'
+        if self.row_header_left.isChecked():
+            info[key] = 'Left'
+        elif self.row_header_center.isChecked():
+            info[key] = 'Center'
+        else:
+            info[key] = 'Right'
+
+        info['Table Row Header Bold'] = self.row_header_bold.isChecked()
+        info['Table Row Header Italic'] = self.row_header_italic.isChecked()
+        info['Table Row Header Underline'] = self.row_header_underline.isChecked()
+        info['Table Row Header Columns'] = self.row_header_columns.value()
+
+        # Tabbing Options
+        # Tabbing Column Width
+        info['Tabbing Column Width'] = self.tabbibg_column_width.value()
+
+        # Array Options
+        # Array Alignment
+        key = 'Array Column Align'
+        if self.array_column_align_left.isChecked():
+            info[key] = 'Left'
+        elif self.array_column_align_center.isChecked():
+            info[key] = 'Center'
+        else:
+            info[key] = 'Right'
+
+        # Array Border
+        info['Array Border'] = self.array_table_border.isChecked()
+        info['Array Division First Row'] = self.array_first_row_division.isChecked()
+        info['Array Division All Rows'] = self.array_all_row_division.isChecked()
+        info['Array Division First Column'] = self.array_first_column_division.isChecked()
+        info['Array Division All Columns'] = self.array_all_column_division.isChecked()
+
+        # Array Decoration
+        key = 'Array Decoration'
+        if self.array_Dec_None.isChecked():
+            info[key] = 'None'
+        elif self.array_Dec_Paren.isChecked():
+            info[key] = '()'
+        elif self.array_Dec_Bracket.isChecked():
+            info[key] = '[]'
+        else:
+            info[key] = '||'
+
+        # Matrix Options
+        key = 'Matrix Decoration'
+        if self.matrix_Dec_None.isChecked():
+            info[key] = 'None'
+        elif self.matrix_Dec_Paren.isChecked():
+            info[key] = '()'
+        elif self.matrix_Dec_Bracket.isChecked():
+            info[key] = '[]'
+        else:
+            info[key] = '||'
+
+        # Special Matrix Options
+        key = 'Special Matrix Decoration'
+        if self.SpecialMatrix_p.isChecked():
+            info[key] = 'pmatrix'
+        elif self.SpecialMatrix_b.isChecked():
+            info[key] = 'bmatrix'
+        elif self.SpecialMatrix_v.isChecked():
+            info[key] = 'vmatrix'
+        else:
+            info[key] = 'Vmatrix'
+
+        # General Options
+        info['Math Mode'] = self.include_math_mode.isChecked()
+        info['Array Stretch'] = self.include_array_stretch.isChecked()
+
+        # return dictionary
+        return info
 
 
 class LaTeXTableEditor(QMainWindow):
@@ -44,7 +1018,7 @@ class LaTeXTableEditor(QMainWindow):
         self.Parent = parent
         
         self.authors = "Don Spickler"
-        self.version = "2.5.1"
+        self.version = "2.6.1"
         self.program_title = "Latex Table Creator"
         self.copyright = "2022 - 2025"
         self.licence = "\nThis software is distributed under the GNU General Public License version 3.\n\n" + \
@@ -58,8 +1032,26 @@ class LaTeXTableEditor(QMainWindow):
         self.programList = []
         self.setMinimumSize(800, 600)
         self.setWindowTitle('LaTeX Table Creator')
-        icon = QIcon(self.resource_path("icons/ProgramIcon.png"))
+        icon = QIcon(self.resource_path("icons/ProgramIcon2.png"))
         self.setWindowIcon(icon)
+
+        self.currentTheme = ''
+        self.Platform = platform.system()
+        styles = QStyleFactory.keys()
+        if "Fusion" in styles:
+            app.setStyle('Fusion')
+            self.currentTheme = 'Fusion'
+        else:
+            self.currentTheme = styles[0]
+
+        try:
+            with open('LaTeXTableCreatorOptions.opt', 'rb') as f:
+                filecontents = pickle.load(f)
+                theme = filecontents[0]
+                self.Parent.setStyle(theme)
+                self.currentTheme = theme
+        except Exception as e:
+            pass
 
         self.createTablePane()
         self.createMenu()
@@ -68,30 +1060,41 @@ class LaTeXTableEditor(QMainWindow):
         self.show()
 
     def resource_path(self, relative_path):
+        """
+        Creates a system path that is rlative to the position of the running application.
+
+        :param relative_path: The relative path of the file from the base position of the running appliction.
+        :return: The full OS path.
+        """
         if hasattr(sys, '_MEIPASS'):
             return os.path.join(sys._MEIPASS, relative_path)
         return os.path.join(os.path.abspath("."), relative_path)
+
+    # def resource_path(self, relative_path):
+    #     if hasattr(sys, '_MEIPASS'):
+    #         return os.path.join(sys._MEIPASS, relative_path)
+    #     return os.path.join(os.path.abspath("LaTeXTableCreator"), relative_path)
 
     def createTablePane(self):
         """
         Sets up the portion of the screen that contains the table and the
         size selection spinners.
         """
-        self.table_widget = LC_Table()
+        self.table_widget = LTC_Table()
 
         row_label = QLabel("Rows")
         self.rows = QSpinBox()
         self.rows.setRange(1, 10000)
         self.rows.setMinimumWidth(75)
         self.rows.setValue(3)
-        self.rows.editingFinished.connect(self.resizeTable)
+        self.rows.valueChanged.connect(self.resizeTableRows)
 
         column_label = QLabel("Columns")
         self.columns = QSpinBox()
         self.columns.setRange(1, 1000)
         self.columns.setMinimumWidth(75)
         self.columns.setValue(3)
-        self.columns.editingFinished.connect(self.resizeTable)
+        self.columns.valueChanged.connect(self.resizeTableColumns)
 
         h_box_tablesize = QHBoxLayout()
         h_box_tablesize.addWidget(row_label)
@@ -111,6 +1114,20 @@ class LaTeXTableEditor(QMainWindow):
         centerPane = QWidget()
         centerPane.setLayout(v_box_tablepane)
         self.setCentralWidget(centerPane)
+
+    def resizeTableRows(self):
+        """
+        Resizes the table to the current spinner values.
+        """
+        self.resizeTable()
+        self.rows.setFocus()
+
+    def resizeTableColumns(self):
+        """
+        Resizes the table to the current spinner values.
+        """
+        self.resizeTable()
+        self.columns.setFocus()
 
     def resizeTable(self):
         """
@@ -193,26 +1210,26 @@ class LaTeXTableEditor(QMainWindow):
         self.fill_cells_act.setStatusTip('Fill each cell with the same value.')
         self.fill_cells_act.triggered.connect(self.filltext)
 
-        self.adjust_widths_act = QAction("Adjust Column Widths", self)
+        self.adjust_widths_act = QAction(QIcon(self.resource_path('icons/AdjCol.png')), "Adjust Column Widths", self)
         self.adjust_widths_act.setStatusTip('Adjust the column widths to fit the contents.')
         self.adjust_widths_act.triggered.connect(self.adjustWidths)
 
-        self.adjust_heights_act = QAction("Adjust Row Heights", self)
+        self.adjust_heights_act = QAction(QIcon(self.resource_path('icons/AdjRow.png')), "Adjust Row Heights", self)
         self.adjust_heights_act.setStatusTip('Adjust the row heights to fit the contents.')
         self.adjust_heights_act.triggered.connect(self.adjustHeights)
 
-        self.adjust_width_height_act = QAction("Adjust Row and Column Sizes", self)
+        self.adjust_width_height_act = QAction(QIcon(self.resource_path('icons/AdjRowCol.png')), "Adjust Row and Column Sizes", self)
         self.adjust_width_height_act.setShortcut('Ctrl+R')
         self.adjust_width_height_act.setStatusTip('Adjust the row and column sizes to fit the contents.')
         self.adjust_width_height_act.triggered.connect(self.adjustWidthHeight)
 
         # Create edit menu actions
-        self.copy_selected_act = QAction(QIcon(self.resource_path('icons/copy.png')), "Copy Selected", self)
+        self.copy_selected_act = QAction(QIcon(self.resource_path('icons/Cascade.png')), "Copy Selected", self)
         self.copy_selected_act.setShortcut('Ctrl+C')
         self.copy_selected_act.setStatusTip('Copy table selection to the clipboard.')
         self.copy_selected_act.triggered.connect(self.copySelected)
 
-        self.copy_all_act = QAction("Copy All", self)
+        self.copy_all_act = QAction(QIcon(self.resource_path('icons/copy.png')), "Copy All", self)
         self.copy_all_act.setShortcut('Shift+Ctrl+C')
         self.copy_all_act.setStatusTip('Copy entire table to the clipboard.')
         self.copy_all_act.triggered.connect(self.copyAll)
@@ -222,7 +1239,7 @@ class LaTeXTableEditor(QMainWindow):
         self.paste_act.setStatusTip('Paste clipboard to table.')
         self.paste_act.triggered.connect(self.paste)
 
-        self.copy_latex_act = QAction(QIcon(self.resource_path('icons/copylatex.png')), "Copy as LaTeX", self)
+        self.copy_latex_act = QAction(QIcon(self.resource_path('icons/latexicon2.png')), "Copy as LaTeX", self)
         self.copy_latex_act.setShortcut('Ctrl+L')
         self.copy_latex_act.setStatusTip('Copy table to LaTeX code with selected options.')
         self.copy_latex_act.triggered.connect(self.latexCopy)
@@ -232,17 +1249,17 @@ class LaTeXTableEditor(QMainWindow):
         self.paste_from_latex_act.setStatusTip('Paste from LaTeX code to table.')
         self.paste_from_latex_act.triggered.connect(self.pasteLatex)
 
-        self.copy_maxima_act = QAction("Copy as Maxima", self)
+        self.copy_maxima_act = QAction(QIcon(self.resource_path('icons/wxmaximaicon002.png')),"Copy as Maxima", self)
         self.copy_maxima_act.setStatusTip('Copy matrix to Maxima code.')
         self.copy_maxima_act.triggered.connect(self.copyMaxima)
 
-        self.copy_sage_act = QAction("Copy as SageMath", self)
+        self.copy_sage_act = QAction(QIcon(self.resource_path('icons/sagemath.png')),"Copy as SageMath", self)
         self.copy_sage_act.setStatusTip('Copy matrix to SageMath code.')
         self.copy_sage_act.triggered.connect(self.copySage)
 
-        self.copy_mathematica_act = QAction("Copy as Mathematica", self)
-        self.copy_mathematica_act.setStatusTip('Copy matrix to Mathematica code.')
-        self.copy_mathematica_act.triggered.connect(self.copyMathematica)
+        self.copy_geogebra_act = QAction(QIcon(self.resource_path('icons/Geogebra002.png')),"Copy as GeoGebra", self)
+        self.copy_geogebra_act.setStatusTip('Copy matrix to Mathematica code.')
+        self.copy_geogebra_act.triggered.connect(self.copyGeoGebra)
 
         self.copy_bracket_act = QAction("Copy [...] Delimited", self)
         self.copy_bracket_act.setStatusTip('Copy matrix in [...] delimited form.')
@@ -250,7 +1267,7 @@ class LaTeXTableEditor(QMainWindow):
 
         self.copy_curleybracket_act = QAction("Copy {...} Delimited", self)
         self.copy_curleybracket_act.setStatusTip('Copy matrix in {...} delimited form.')
-        self.copy_curleybracket_act.triggered.connect(self.copyMathematica)
+        self.copy_curleybracket_act.triggered.connect(self.copyGeoGebra)
 
         self.copy_angle_bracket_act = QAction("Copy <...> Delimited", self)
         self.copy_angle_bracket_act.setStatusTip('Copy matrix in <...> delimited form.')
@@ -275,12 +1292,28 @@ class LaTeXTableEditor(QMainWindow):
         self.Redo_act.setStatusTip('Redo the last edit.')
         self.Redo_act.triggered.connect(self.redo)
 
+        self.view_increase_font_size_act = QAction(QIcon(self.resource_path('icons/zoomin.png')), "Increase Font Size", self)
+        self.view_increase_font_size_act.setStatusTip('Increase the font size in the workspace.')
+        self.view_increase_font_size_act.triggered.connect(self.increaseWorksheetFontSize)
+
+        self.view_decrease_font_size_act = QAction(QIcon(self.resource_path('icons/zoomout.png')), "Decrease Font Size", self)
+        self.view_decrease_font_size_act.setStatusTip('Decrease the font size in the workspace.')
+        self.view_decrease_font_size_act.triggered.connect(self.decreaseWorksheetFontSize)
+
+        self.view_reset_font_size_act = QAction(QIcon(self.resource_path('icons/Tile.png')), "Reset Font Size", self)
+        self.view_reset_font_size_act.setStatusTip('Reset the font size in the workspace to the defaults.')
+        self.view_reset_font_size_act.triggered.connect(self.resetWorksheetFontSize)
+
+        self.SelectTheme_act = QAction("Select Theme...", self)
+        self.SelectTheme_act.triggered.connect(self.SelectTheme)
+        self.SelectTheme_act.setStatusTip('Select from the current supported system themes.')
+
         # Create help menu actions
         self.help_about_act = QAction(QIcon(self.resource_path('icons/About.png')), "About...", self)
         self.help_about_act.setStatusTip('About the LaTeX Table Creator')
         self.help_about_act.triggered.connect(self.aboutDialog)
 
-        self.help_help_act = QAction("Help...", self)
+        self.help_help_act = QAction(QIcon(self.resource_path('icons/Help2.png')), "Help...", self)
         self.help_help_act.setStatusTip('Help with ' + self.program_title + " Version " + self.version + "...")
         self.help_help_act.triggered.connect(self.onHelp)
 
@@ -301,19 +1334,22 @@ class LaTeXTableEditor(QMainWindow):
         edit_menu = menu_bar.addMenu('Edit')
         edit_menu.addAction(self.copy_selected_act)
         edit_menu.addAction(self.copy_all_act)
+        edit_menu.addAction(self.select_all_act)
         edit_menu.addAction(self.paste_act)
         edit_menu.addSeparator()
         edit_menu.addAction(self.copy_latex_act)
         edit_menu.addAction(self.paste_from_latex_act)
         edit_menu.addSeparator()
-        edit_menu.addAction(self.copy_sage_act)
+        edit_menu.addAction(self.copy_geogebra_act)
         edit_menu.addAction(self.copy_maxima_act)
-        edit_menu.addAction(self.copy_mathematica_act)
+        edit_menu.addAction(self.copy_sage_act)
         edit_menu.addSeparator()
         edit_menu.addAction(self.copy_bracket_act)
         edit_menu.addAction(self.copy_curleybracket_act)
         edit_menu.addAction(self.copy_angle_bracket_act)
         edit_menu.addAction(self.copy_html_act)
+        edit_menu.addSeparator()
+        edit_menu.addAction(self.SelectTheme_act)
         edit_menu.addSeparator()
         edit_menu.addAction(self.Undo_act)
         edit_menu.addAction(self.Redo_act)
@@ -330,16 +1366,20 @@ class LaTeXTableEditor(QMainWindow):
         table_menu.addAction(self.delete_col_act)
         table_menu.addAction(self.delete_row_col_act)
         table_menu.addSeparator()
-        table_menu.addAction(self.select_all_act)
-        table_menu.addAction(self.clear_table_act)
-        table_menu.addSeparator()
         table_menu.addAction(self.transpose_act)
         table_menu.addAction(self.trim_act)
         table_menu.addAction(self.fill_cells_act)
         table_menu.addSeparator()
-        table_menu.addAction(self.adjust_widths_act)
-        table_menu.addAction(self.adjust_heights_act)
-        table_menu.addAction(self.adjust_width_height_act)
+        table_menu.addAction(self.clear_table_act)
+
+        view_menu = menu_bar.addMenu('View')
+        view_menu.addAction(self.adjust_widths_act)
+        view_menu.addAction(self.adjust_heights_act)
+        view_menu.addAction(self.adjust_width_height_act)
+        view_menu.addSeparator()
+        view_menu.addAction(self.view_increase_font_size_act)
+        view_menu.addAction(self.view_decrease_font_size_act)
+        view_menu.addAction(self.view_reset_font_size_act)
 
         # Create help menu and add actions
         help_menu = menu_bar.addMenu('Help')
@@ -352,7 +1392,8 @@ class LaTeXTableEditor(QMainWindow):
         """
         # Set up toolbar
         tool_bar = QToolBar("Main Toolbar")
-        tool_bar.setIconSize(QSize(16, 16))
+        tool_bar.setIconSize(QSize(18, 18))
+        tool_bar.setMovable(False)
         self.addToolBar(tool_bar)
 
         # Add actions to toolbar
@@ -361,14 +1402,53 @@ class LaTeXTableEditor(QMainWindow):
         tool_bar.addAction(self.file_saveas_act)
         tool_bar.addSeparator()
         tool_bar.addAction(self.copy_selected_act)
+        tool_bar.addAction(self.copy_all_act)
         tool_bar.addAction(self.paste_act)
+        tool_bar.addSeparator()
+        tool_bar.addAction(self.copy_latex_act)
+        tool_bar.addSeparator()
+        tool_bar.addAction(self.adjust_widths_act)
+        tool_bar.addAction(self.adjust_heights_act)
+        tool_bar.addAction(self.adjust_width_height_act)
+        tool_bar.addSeparator()
+        tool_bar.addAction(self.view_increase_font_size_act)
+        tool_bar.addAction(self.view_decrease_font_size_act)
+        tool_bar.addAction(self.view_reset_font_size_act)
         tool_bar.addSeparator()
         tool_bar.addAction(self.Undo_act)
         tool_bar.addAction(self.Redo_act)
         tool_bar.addSeparator()
-        tool_bar.addAction(self.copy_latex_act)
-        tool_bar.addSeparator()
+        tool_bar.addAction(self.help_help_act)
         tool_bar.addAction(self.help_about_act)
+
+    def increaseWorksheetFontSize(self):
+        self.table_widget.increaseFontSize()
+
+    def decreaseWorksheetFontSize(self):
+        self.table_widget.decreaseFontSize()
+
+    def resetWorksheetFontSize(self):
+        self.table_widget.resetFontSize()
+
+    def SelectTheme(self):
+        items = QStyleFactory.keys()
+        if len(items) <= 1:
+            return
+
+        items.sort()
+        item, ok = QInputDialog.getItem(self, "Select Theme", "Available Themes", items, 0, False)
+
+        if ok:
+            self.Parent.setStyle(item)
+            self.currentTheme = item
+            optlist = [self.currentTheme]
+            with open('LaTeXTableCreatorOptions.opt', 'wb') as f:
+                try:
+                    pickle.dump(optlist, f)
+                except:
+                    QMessageBox.warning(self, "File Not Saved", "The options file could not be saved.",
+                                        QMessageBox.Ok)
+            # self.saveOptions()
 
     def createDockWidget(self):
         """
@@ -383,7 +1463,7 @@ class LaTeXTableEditor(QMainWindow):
 
         self.dock_widget.setFeatures(QDockWidget.DockWidgetFloatable |
                                      QDockWidget.DockWidgetMovable)
-        self.options_pane = OptionsEditorPane()
+        self.options_pane = LTCOptionsEditorPane()
 
         # Create a scroll area for the options panels.
         scroll_area = QScrollArea()
@@ -977,9 +2057,9 @@ class LaTeXTableEditor(QMainWindow):
         str = self.itemsToDelimitedString(items, ld, rd)
         self.clipboard.setText(str)
 
-    def copyMathematica(self):
+    def copyGeoGebra(self):
         """
-        Copies the table as Mathematica code {} to the clipboard.
+        Copies the table as GeoGebra code {} to the clipboard.
         """
         self.copySpecial('{', '}')
 
@@ -1041,10 +2121,14 @@ class LaTeXTableEditor(QMainWindow):
         """
         Resets the spinner values to match the size of the table.
         """
+        self.rows.blockSignals(True)
+        self.columns.blockSignals(True)
         if self.table_widget.rowCount() != self.rows.value():
             self.rows.setValue(self.table_widget.rowCount())
         if self.table_widget.columnCount() != self.columns.value():
             self.columns.setValue(self.table_widget.columnCount())
+        self.rows.blockSignals(False)
+        self.columns.blockSignals(False)
 
     def itemsToDelimitedString(self, items, ld, rd):
         """
@@ -1081,7 +2165,6 @@ class LaTeXTableEditor(QMainWindow):
                     retstr = retstr + '\n'
                 else:
                     retstr = retstr + '\t'
-
         return retstr
 
     def tabStringToItems(self, tdstr):
@@ -1095,7 +2178,6 @@ class LaTeXTableEditor(QMainWindow):
             if len(line) > 0:
                 splitline = line.split('\t')
                 retitems.append(splitline)
-
         return retitems
 
     def addRowAbove(self):
@@ -1224,6 +2306,6 @@ if __name__ == '__main__':
     """
     app = QApplication(sys.argv)
     window = LaTeXTableEditor(app)
-    progcss = appcss()
+    progcss = LTCappcss()
     app.setStyleSheet(progcss.getCSS())
     sys.exit(app.exec())

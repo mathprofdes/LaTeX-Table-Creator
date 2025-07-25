@@ -1,12 +1,12 @@
 # LaTeX Table Creator
 
-**Download the Current Version (2.5.1)**
+**Download the Current Version (2.6.1)**
 
 **Windows Users**
 
 This is a Python application using the PySide6 GUI API, but you do not need to have either Python nor PySide6 installed on your machine to run this program. The Windows distribution of this program is as a single stand-alone executable file, LaTeXTableCreator.exe.  This software has been tested on both Windows 10 and 11.
 
-- Download the **[LaTeXTableCreator.exe](https://github.com/mathprofdes/LaTeX-Table-Creator/releases/download/v2.5.1/LaTeXTableCreator.exe)** file.
+- Download the **[LaTeXTableCreator.exe](https://github.com/mathprofdes/LaTeX-Table-Creator/releases/download/v2.6.1/LaTeXTableCreator.exe)** file.
 - From Windows Explorer double-click the LaTeXTableCreator.exe file.
 
 **Linux and MacOS Users**
@@ -15,19 +15,18 @@ This is a Python application using the PySide6 GUI API. To run this program from
 
 To run this program from the source code:
 
-- Download and extract the Source Code file from the most current release.
+- Download and extract the Source Code file in the Assets below.
 - Make sure that Python3 and the python package PySide6 are installed on your system.
 - Run the following command from your terminal: `python LaTeXTableCreator.py` or possibly `python3 LaTeXTableCreator.py`
 
 **Notes:** 
 - For Linux and MacOS users, depending on how your system is set up, you may be able to simply double-click the LaTeXTableCreator.py file from your file browser instead of running this from the terminal.
-- There are png and ico files of a program icon included if you wish to use them for a shortcut to the program. 
-  - **[ProgramIcon.ico](https://github.com/mathprofdes/LaTeX-Table-Creator/releases/download/v2.5.1/ProgramIcon.ico)**
-  - **[ProgramIcon.png](https://github.com/mathprofdes/LaTeX-Table-Creator/releases/download/v2.5.1/ProgramIcon.png)**
+- There is a png file of a program icon included if you wish to use it for a shortcut to the program, **[ProgramIcon.png](https://github.com/mathprofdes/LaTeX-Table-Creator/releases/download/v2.6.1/ProgramIcon.png)**
 
 **Updates:** 
-- Fixed a small bug in the Paste from LaTeX code.
-- Revised the help system to Sphinx.
+- Fixed a small bug in the Undo/Redo code.
+- Added several new user-interface options.
+- Set the default theme to Fusion, to have a better look and feel across platforms.  
 
 ---
 
@@ -45,4 +44,4 @@ This program is designed to make the creation of LaTeX tables easier but is not 
 
 **Screenshot**
 
-![Screenshot of program.](https://github.com/mathprofdes/LaTeX-Table-Creator/releases/download/v2.5.1/LatexTableCreatorPython.png)
+![Screenshot of program.](https://github.com/mathprofdes/LaTeX-Table-Creator/releases/download/v2.6.1/LaTeXTableCreatorScreenshot.png)
